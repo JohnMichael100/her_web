@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message</title>
+    <style>
+        :root {
+            --pink: #ffafbd;
+            --rose: #ffc3a0;
+            --dark-pink: #d4418e;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--pink), var(--rose));
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        /* Screen 1: The Question */
+        #question-screen {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 20px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 20;
+            width: 350px;
+            max-width: 85%;
+        }
+
+        .btn-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px; 
+            height: 60px;
+            align-items: center;
+            position: relative;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        #yes-btn {
+            background-color: var(--dark-pink);
+            color: white;
+            box-shadow: 0 4px 15px rgba(212, 65, 142, 0.3);
+            z-index: 5;
+        }
+
+        #no-btn {
+            background-color: #f0f0f0;
+            color: #444;
+            z-index: 1000;
+            position: relative;
+            touch-action: none; /* Prevents mobile scrolling when tapped */
+        }
+
+        /* Screen 2: The Heart */
+        #heart-container {
+            display: none;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .heart {
+            background-color: var(--dark-pink);
+            display: inline-block;
+            height: 80px;
+            position: relative;
+            transform: rotate(-45deg);
+            width: 80px;
+            animation: beat 0.8s infinite alternate;
+            cursor: pointer;
+        }
+
+        .heart:before, .heart:after {
+            content: "";
+            background-color: var(--dark-pink);
+            border-radius: 50%;
+            height: 80px;
+            position: absolute;
+            width: 80px;
+        }
+        .heart:before { top: -40px; left: 0; }
+        .heart:after { left: 40px; top: 0; }
+
+        @keyframes beat { to { transform: scale(1.1) rotate(-45deg); } }
+
+        /* Screen 3: The Letter */
+        #letter {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 85%;
+            z-index: 30;
+            max-height: 75vh; 
+            overflow-y: auto; /* Makes the letter scrollable */
+            text-align: left;
+        }
+
+        #text-content {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #444;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+
+        .particle {
+            position: absolute;
+            top: -10%;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="question-screen">
+        <h2 style="color: var(--dark-pink); margin-top: 0;">Do you want to accept my simple confession?</h2>
+        <div class="btn-container">
+            <button id="yes-btn" onclick="showHeart()">Yes!</button>
+            <button id="no-btn" onmouseover="moveNo()" onclick="moveNo()">No</button>
+        </div>
+    </div>
+
+    <div id="heart-container" onclick="openLetter()">
+        <div class="heart"></div>
+        <h3 style="margin-top: 50px; color: white; text-shadow: 1px 1px 5px rgba(0,0,0,0.2);">
+            I knew you'd say yes! <br>Click the heart to read.
+        </h3>
+    </div>
+
+    <div id="letter">
+        <h1 style="color: var(--dark-pink); margin-bottom: 5px;">Hi Beaa,</h1>
+        <hr style="border: 0; border-top: 1px solid #f0f0f0; margin-bottom: 20px;">
+        <div id="text-content"></div>
+        <p style="font-size: 2rem; text-align: center; margin: 0;">💖</p>
+    </div>
+
+    <script>
+        const message = "I’ve been holding this in for a while now. I didn’t have the guts to say this to your face, but I also didn’t want to wait any longer. I spent a lot of time overthinking the best way to tell you, so I decided to build this interactive website for you instead. I hope you like the design. \n\nI wanted to tell you how much I truly treasure the time we spend together. Whether it’s a long conversation or just a random moment, you are always the highlight of my day. I know we are both busy with the college grind, and life feels like a constant rush right now. Because of that, please know there is absolutely no pressure. I’m not in a hurry to change things, I just couldn't keep these feelings to myself anymore. \n\nI’ve been praying for a sign and for the right time to speak up because I wanted to be sure of my intentions. Whatever your answer is, I will accept it, so please don't be afraid to be honest with me. I really hope we can avoid any awkwardness after this, because I truly value our connection. Even if you don't feel the same way, I can handle it though, of course, I am hoping you do. \n\nTo be direct, I really like you exactly as you are. I like your smile, your vibe, and your attitude. You are smart, kind, and you have a way of making me feel at ease without even trying. Whatever happens, I’m just glad that I met you and finally had the courage to tell you that I like you, Bea.";
+
+        function moveNo() {
+            const btn = document.getElementById('no-btn');
+            btn.style.position = 'fixed';
+
+            // Calculate safe boundaries so it stays on the screen (Mobile Friendly)
+            const padding = 20;
+            const maxX = window.innerWidth - btn.offsetWidth - padding;
+            const maxY = window.innerHeight - btn.offsetHeight - padding;
+
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+
+        function showHeart() {
+            document.getElementById('question-screen').style.display = 'none';
+            document.getElementById('heart-container').style.display = 'block';
+            document.body.style.background = "#ff758c";
+        }
+
+        function openLetter() {
+            document.getElementById('heart-container').style.display = 'none';
+            document.getElementById('letter').style.display = 'block';
+            typeWriter();
+            setInterval(createHeart, 300);
+        }
+
+        let i = 0;
+        function typeWriter() {
+            if (i < message.length) {
+                const textContainer = document.getElementById("text-content");
+                textContainer.innerHTML += message.charAt(i);
+                i++;
+
+                // Auto-scroll inside the letter as it types
+                const letterBox = document.getElementById("letter");
+                letterBox.scrollTop = letterBox.scrollHeight;
+
+                setTimeout(typeWriter, 35); // Adjusted speed for better reading
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('particle');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+    </script>
+</body>
+</html>
